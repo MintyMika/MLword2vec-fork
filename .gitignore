@@ -2,3 +2,10 @@ data/
 .data/
 .ipynb_checkpoints/
 __pycache__/
+.venv/
+Dataset/
+venv/
+.idea/
+idea/
+.conda/
+conda/
