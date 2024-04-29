@@ -4,7 +4,10 @@ import re
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 from torch import optim
+from alive_progress import alive_bar
 
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SpotifyData(Dataset):
     def __init__(self, filename):
@@ -41,23 +44,28 @@ class Artist2Vec(nn.Module):
         return x
 
 
-sd = SpotifyData("MinimizedPlaylistVectors.txt")
+sd = SpotifyData(r"data\modifiedPlaylists.txt")
 dl = DataLoader(sd, batch_size=16, shuffle=True)
 
 model = Artist2Vec()
+model.to(device)
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001)
 
+
 for epochs in range(12):
+    print("Epoch: ", epochs)
     running_loss = 0.0
-    for i, data in enumerate(dl, 0):
-        input = data[:, 1:]
-        labels = data[:, 0]
-        optimizer.zero_grad()
-        output = model(input)
-        loss = loss_fn(output, labels)
-        loss.backward()
-        optimizer.step()
-        running_loss += loss.item()
+    with alive_bar(len(dl)) as bar:
+        for i, data in enumerate(dl, 0):
+            input = data[:, 1:].to(device)
+            labels = data[:, 0].to(device)
+            optimizer.zero_grad()
+            output = model(input)
+            loss = loss_fn(output, labels)
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
+            bar()
     print(running_loss)
