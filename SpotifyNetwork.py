@@ -69,3 +69,6 @@ for epochs in range(12):
             running_loss += loss.item()
             bar()
     print(running_loss)
+
+# Save the model
+torch.save(model.state_dict(), r"data\model.pth")
