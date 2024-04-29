@@ -4,8 +4,11 @@ import re
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 from torch import optim
+import time
 
-
+# Device configuration
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Device: {device}")
 class SpotifyData(Dataset):
     def __init__(self, filename):
         self.data = []
@@ -21,7 +24,7 @@ class SpotifyData(Dataset):
 
     def __getitem__(self, item):
         sample = np.random.choice(self.data[item], size=5, replace=False)
-        return torch.tensor(sample).long()
+        return torch.tensor(sample, device=device).long()
 
     def __len__(self):
         return self.len
@@ -40,24 +43,27 @@ class Artist2Vec(nn.Module):
         x = self.embed_out(x)
         return x
 
-
-sd = SpotifyData("MinimizedPlaylistVectors.txt")
+# Move data to GPU
+sd = SpotifyData("modifiedPlaylists.txt")
 dl = DataLoader(sd, batch_size=16, shuffle=True)
 
-model = Artist2Vec()
+# Instantiate model and move it to GPU
+model = Artist2Vec().to(device)
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 for epochs in range(12):
     running_loss = 0.0
+    start_time = time.time()
     for i, data in enumerate(dl, 0):
-        input = data[:, 1:]
-        labels = data[:, 0]
+        input = data[:, 1:].to(device)  # Move input to GPU
+        labels = data[:, 0].to(device)   # Move labels to GPU
         optimizer.zero_grad()
         output = model(input)
         loss = loss_fn(output, labels)
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
-    print(running_loss)
+    elapsed_time = (time.time() - start_time)/60
+    print(f"epoch time:{elapsed_time:.2f} min. Loss: {running_loss}")
