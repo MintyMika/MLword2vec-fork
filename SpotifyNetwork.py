@@ -9,6 +9,7 @@ from alive_progress import alive_bar
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device: ", device)
+
 class SpotifyData(Dataset):
     def __init__(self, filename):
         self.data = []
@@ -44,7 +45,7 @@ class Artist2Vec(nn.Module):
         return x
 
 
-sd = SpotifyData(r"data\modifiedPlaylists.txt")
+sd = SpotifyData(r"modifiedPlaylists.txt")
 dl = DataLoader(sd, batch_size=16, shuffle=True)
 
 model = Artist2Vec()

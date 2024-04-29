@@ -1,6 +1,7 @@
 import torch
 
-# Creating 19971 vectors of size 19971 with a one in the index of the artist and then saving them as tensors to a file
-vectors = torch.eye(19971)
-torch.save(vectors, 'OneHot.pt')
+# Creating 19970 vectors of size 19970 with a one in the index of the artist and then saving them as tensors to a file
+vectors = torch.eye(19970)
+print(vectors[2])
+#torch.save(vectors, 'OneHot.pt')
 
