@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+print("Device: ", device)
 class SpotifyData(Dataset):
     def __init__(self, filename):
         self.data = []
@@ -24,7 +24,7 @@ class SpotifyData(Dataset):
 
     def __getitem__(self, item):
         sample = np.random.choice(self.data[item], size=5, replace=False)
-        return torch.tensor(sample).long()
+        return torch.tensor(sample, device=device).long()
 
     def __len__(self):
         return self.len
