@@ -7,7 +7,7 @@ matdata = torch.load(r'weights.pth')
 
 
 # Load the JSON data into a Python dictionary
-with open('artistValues.json', 'r') as f:
+with open(r'data\artistValues.json', 'r') as f:
     data = json.load(f)
 
 # Function to find the number associated with the given name

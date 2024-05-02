@@ -17,7 +17,7 @@ class Artist2Vec(nn.Module):
 
 # Load the model
 model = Artist2Vec()
-model.load_state_dict(torch.load('model.pth'))
+model.load_state_dict(torch.load(r'data\model.pth'))
 model.eval()
 
 # Extract the weights from the embedding layer

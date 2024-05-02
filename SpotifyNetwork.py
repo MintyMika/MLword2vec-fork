@@ -24,7 +24,7 @@ class SpotifyData(Dataset):
         print(self.max)
 
     def __getitem__(self, item):
-        sample = np.random.choice(self.data[item], size=5, replace=False)
+        sample = np.random.choice(self.data[item], size=6, replace=False)
         return torch.tensor(sample, device=device).long()
 
     def __len__(self):
@@ -45,7 +45,7 @@ class Artist2Vec(nn.Module):
         return x
 
 
-sd = SpotifyData(r"modifiedPlaylists.txt")
+sd = SpotifyData(r"data\modifiedPlaylists.txt")
 dl = DataLoader(sd, batch_size=16, shuffle=True)
 
 model = Artist2Vec()
@@ -55,7 +55,7 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 
-for epochs in range(12):
+for epochs in range(50):
     print("Epoch: ", epochs)
     running_loss = 0.0
     with alive_bar(len(dl)) as bar:
@@ -69,8 +69,11 @@ for epochs in range(12):
             optimizer.step()
             running_loss += loss.item()
             bar()
+        if epochs % 10 == 0:
+            torch.save(model.embed.weight, r'weights1.pth')
+
     print(running_loss)
 
 # Save the model weights
-torch.save(model.embed.state_dict(), r'weights.pth')
+torch.save(model.embed.weight, r'weights1.pth')
 
