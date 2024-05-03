@@ -53,13 +53,13 @@ def find_recs(*artists):
         for key, value in data.items():
             if value == i:
                 similarArtists.append(key)
-                print(key)
+                # print(key)
 
     return similarArtists
 
 
-artist1 = input("Enter an artist name: ")
-artist2 = input("Enter an artist name: ")
-artist3 = input("Enter an artist name: ")
+# artist1 = input("Enter an artist name: ")
+# artist2 = input("Enter an artist name: ")
+# artist3 = input("Enter an artist name: ")
 
-find_recs(artist1, artist2, artist3)
+# find_recs(artist1, artist2, artist3)
