@@ -32,11 +32,11 @@ class SpotifyData(Dataset):
 
 
 class Artist2Vec(nn.Module):
-    def __init__(self, num_embeddings=19971):
+    def __init__(self, num_embeddings=20000):
         super(Artist2Vec, self).__init__()
-        self.embed = nn.Embedding(num_embeddings=num_embeddings, embedding_dim=70)
+        self.embed = nn.Embedding(num_embeddings=num_embeddings, embedding_dim=55)
         print(self.embed.weight.shape)
-        self.embed_out = nn.Linear(70, num_embeddings)
+        self.embed_out = nn.Linear(55, num_embeddings)
 
     def forward(self, x):
         x = self.embed(x)
@@ -52,10 +52,10 @@ model = Artist2Vec()
 model.to(device)
 
 loss_fn = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
 
 
-for epochs in range(50):
+for epochs in range(150):
     print("Epoch: ", epochs)
     running_loss = 0.0
     with alive_bar(len(dl)) as bar:
@@ -69,11 +69,11 @@ for epochs in range(50):
             optimizer.step()
             running_loss += loss.item()
             bar()
-        if epochs % 10 == 0:
-            torch.save(model.embed.weight, r'weights1.pth')
+        if epochs % 20 == 0:
+            torch.save(model.embed.weight, r'weightsD.pth')
 
     print(running_loss)
 
 # Save the model weights
-torch.save(model.embed.weight, r'weights1.pth')
+torch.save(model.embed.weight, r'weightsD.pth')
 

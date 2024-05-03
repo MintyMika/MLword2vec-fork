@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 #Load in weights
-matdata = torch.load(r'weights.pth')
+matdata = torch.load(r'weightsD.pth')
 
 
 # Load the JSON data into a Python dictionary
@@ -18,8 +18,7 @@ def find_number(name):
         return None  # Return None if name not found
 
 #Function to find 10 recommended artists
-def find_recs(artist1, artist2, artist3):
-    artists = [artist1, artist2, artist3]
+def find_recs(*artists):
     artist_numbers = [find_number(artist) for artist in artists]
 
     if None in artist_numbers:
@@ -27,8 +26,8 @@ def find_recs(artist1, artist2, artist3):
         print(f"The following artist(s) could not be found in the data: {', '.join(missing_artists)}")
         return
 
-    # myVec will be the matdata[artist1] + matdata[artist2] + matdata[artist3] and then average
-    myVec = (matdata[artist_numbers[0]] + matdata[artist_numbers[1]] + matdata[artist_numbers[2]]) / 3
+    # myVec will be the matdata[artist1] + matdata[artist2] + matdata[artist3] ... + matdata[artistn] and then average
+    myVec = torch.mean(torch.stack([matdata[artist] for artist in artist_numbers]), dim=0)
 
     # now matdata * myVec
     something = torch.matmul(matdata, myVec)
